@@ -1,0 +1,18 @@
+server:
+    port: 9191
+spring:
+    application:
+        name: BankApplication
+    datasource:
+        url: jdbc:postgresql://localhost:5432/BankApplicationDB
+        username: kacper
+        password: kacper
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+    jwt:
+        secret_key: a7ddc7a7cc0971d97d8f93c3625b36f9746164ecb01559874ea06a98679b1c3a
+        #1 hour
+        expiration_time: 3600000
+
