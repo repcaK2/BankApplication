@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -30,8 +29,11 @@ public class User implements UserDetails {
 	private String password;
 	@NaturalId(mutable = true)
 	private String email;
-	private String number;
-	private boolean isEnabled = false;
+	private String phoneNumber;
+	private String accountNumber;
+	private double accountBalance;
+	private Integer Pin;
+	private boolean isEnabled;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;

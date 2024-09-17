@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -27,6 +29,10 @@ public class AuthenticationService {
 				.lastName(request.getLastname())
 				.email(request.getEmail())
 				.password(passwordEncoder.encode(request.getPassword()))
+				.phoneNumber(request.getPhoneNumber())
+				.Pin(request.getPIN())
+				.accountNumber(generateAccountNumber())
+				.accountBalance(1000)
 				.role(Role.USER)
 				.isEnabled(true)
 				.build();
@@ -54,5 +60,16 @@ public class AuthenticationService {
 		return AuthenticationResponse.builder()
 				.token(jwtToken)
 				.build();
+	}
+
+	public static String generateAccountNumber() {
+		Random random = new Random();
+		StringBuilder accountNumber = new StringBuilder();
+
+		for (int i = 0; i < 26; i++) {
+			int digit = random.nextInt(10);
+			accountNumber.append(digit);
+		}
+		return accountNumber.toString();
 	}
 }
