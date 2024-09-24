@@ -30,7 +30,7 @@ public class AuthenticationService {
 				.email(request.getEmail())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.phoneNumber(request.getPhoneNumber())
-				.Pin(request.getPIN())
+				.pin(passwordEncoder.encode(request.getPIN()))
 				.accountNumber(generateAccountNumber())
 				.accountBalance(1000)
 				.role(Role.USER)

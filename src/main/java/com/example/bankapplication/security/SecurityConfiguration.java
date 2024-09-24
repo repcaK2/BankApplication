@@ -24,12 +24,15 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
-				.cors(AbstractHttpConfigurer::disable)  // Wyłączanie CORS, jeśli chcesz zostawić włączone, usuń tę linię
-				.csrf(AbstractHttpConfigurer::disable)  // Wyłączanie CSRF
+				.cors(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/auth/**").permitAll()
 						.requestMatchers("/admin/**").hasAuthority("ADMIN")
 						.requestMatchers("/secured").hasAuthority("USER")
+						.requestMatchers("/transaction/all").hasAuthority("USER")
+						.requestMatchers("/transaction/user").hasAnyAuthority("USER", "ADMIN")
+						.requestMatchers("/transferMoney").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/home", "/profile").hasAnyAuthority("USER", "ADMIN")
 						.anyRequest()
 						.authenticated()

@@ -1,5 +1,6 @@
 package com.example.bankapplication.user;
 
+import com.example.bankapplication.history.TransactionHistory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -32,11 +34,14 @@ public class User implements UserDetails {
 	private String phoneNumber;
 	private String accountNumber;
 	private double accountBalance;
-	private Integer Pin;
+	private String pin;
 	private boolean isEnabled;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<TransactionHistory> transactionHistories;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
