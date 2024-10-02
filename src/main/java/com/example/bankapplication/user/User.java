@@ -32,6 +32,7 @@ public class User implements UserDetails {
 	@NaturalId(mutable = true)
 	private String email;
 	private String phoneNumber;
+	@NaturalId(mutable = true)
 	private String accountNumber;
 	private double accountBalance;
 	private String pin;

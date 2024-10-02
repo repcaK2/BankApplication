@@ -36,5 +36,19 @@ public class TransactionHistoryDTO {
 		this.senderEmail = transaction.getUser().getEmail();
 		this.senderName = transaction.getUser().getFirstName() + " " + transaction.getUser().getLastName();
 	}
+
+	@Override
+	public String toString() {
+		return "TransactionHistoryDTO{" +
+				"dateOfCreation=" + dateOfCreation +
+				", amount=" + amount +
+				", transactionType='" + transactionType + '\'' +
+				", description='" + description + '\'' +
+				", receiverEmail='" + receiverEmail + '\'' +
+				", receiverName='" + receiverName + '\'' +
+				", senderEmail='" + senderEmail + '\'' +
+				", senderName='" + senderName + '\'' +
+				'}';
+	}
 }
 

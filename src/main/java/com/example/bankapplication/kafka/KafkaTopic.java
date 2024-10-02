@@ -12,10 +12,20 @@ public class KafkaTopic {
 	@Value("${spring.kafka.topic.test}")
 	private String topic_test;
 
+	@Value("${spring.kafka.topic.newBlik}")
+	private String topic_new_blik;
+
 	@Bean
 	public NewTopic test() {
 		return TopicBuilder
 				.name(topic_test)
+				.build();
+	}
+
+	@Bean
+	public NewTopic newBlik() {
+		return TopicBuilder
+				.name(topic_new_blik)
 				.build();
 	}
 }

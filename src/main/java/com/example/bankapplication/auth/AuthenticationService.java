@@ -62,14 +62,19 @@ public class AuthenticationService {
 				.build();
 	}
 
-	public static String generateAccountNumber() {
+	public String generateAccountNumber() {
 		Random random = new Random();
-		StringBuilder accountNumber = new StringBuilder();
+		String accountNumber;
 
-		for (int i = 0; i < 26; i++) {
-			int digit = random.nextInt(10);
-			accountNumber.append(digit);
-		}
-		return accountNumber.toString();
+		do {
+			StringBuilder accountNumberBuilder = new StringBuilder();
+			for (int i = 0; i < 26; i++) {
+				int digit = random.nextInt(10);
+				accountNumberBuilder.append(digit);
+			}
+			accountNumber = accountNumberBuilder.toString();
+		} while (repository.existsByAccountNumber(accountNumber));
+
+		return accountNumber;
 	}
 }

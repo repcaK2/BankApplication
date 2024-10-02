@@ -13,10 +13,14 @@ spring:
         show-sql: true
     jwt:
         secret_key: a7ddc7a7cc0971d97d8f93c3625b36f9746164ecb01559874ea06a98679b1c3a
-        #1 hour
+        #1 hour in milliseconds
         expiration_time: 3600000
     kafka:
         bootstrap_servers: localhost:9092
         topic:
-            test: test
+            test: topicTest
+            newBlik: topicNewBlik
+    blik:
+        #2 minutes in milliseconds
+        expiration_time: 120000
 
