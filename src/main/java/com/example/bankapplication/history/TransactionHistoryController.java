@@ -45,7 +45,7 @@ public class TransactionHistoryController {
 			Principal principal
 	) {
 		String userEmail = principal.getName();
-		try {
+
 			User user = userRepository.findByEmail(userEmail)
 					.orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
 
@@ -56,8 +56,6 @@ public class TransactionHistoryController {
 					.collect(Collectors.toList());
 
 			return ResponseEntity.ok().body(transactionDTOs);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving transactions");
-		}
+
 	}
 }

@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,23 +52,4 @@ public class UserController {
 		}
 	}
 
-
-	@PostMapping("/user/email")
-	public ResponseEntity<User> findUserByEmail(
-			@RequestParam String email
-	) {
-		try {
-			User foundUserByEmail = userService.findUserByEmail(email);
-			if (foundUserByEmail == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-			}
-			return ResponseEntity.ok().body(foundUserByEmail);
-		} catch (DataAccessException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (NoSuchElementException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}
 }

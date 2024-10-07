@@ -13,7 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class TransactionHistoryDTO {
 
-	private Long id;
 	private Date dateOfCreation;
 	private double amount;
 	private String transactionType;
@@ -25,7 +24,6 @@ public class TransactionHistoryDTO {
 	private String senderName;
 
 	public TransactionHistoryDTO(TransactionHistory transaction) {
-		this.id = transaction.getId();
 		this.dateOfCreation = transaction.getDateOfCreation();
 		this.amount = transaction.getAmount();
 		this.transactionType = transaction.getTransactionType();

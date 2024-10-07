@@ -30,6 +30,7 @@ public class User implements UserDetails {
 	private String lastName;
 	private String password;
 	@NaturalId(mutable = true)
+	@Column(unique = true)
 	private String email;
 	private String phoneNumber;
 	@NaturalId(mutable = true)
@@ -78,4 +79,5 @@ public class User implements UserDetails {
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
+
 }
