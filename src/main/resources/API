@@ -141,8 +141,8 @@ It doesn't throw exception on client side but set a status Code
 Generate Blik Request:
 http://localhost:9191/generate/requestBlik
 Example Request:
-It requires 2 Parameters: blikCode, requestedFunds
-After sending 2 parameters url should looks for example: http://localhost:9191/generate/requestBlik?blikCode=580526&requestedFunds=200
+It requires 2 Parameters: (String) blikCode, (double) requestedFunds
+URL with 2 parameters should looks for example: http://localhost:9191/generate/requestBlik?blikCode=580526&requestedFunds=200
 Example Response:
 {
     "blikCode": "535798",
@@ -152,4 +152,33 @@ Example Response:
     "message": "BLIK request is created and waiting for owner acceptance"
 }
 Example Exception:
-Blik code not found
+{
+    "timeStamp": "2024-10-08T15:04:55.882+00:00",
+    "isError": true,
+    "series": "CLIENT_ERROR",
+    "isSuccessfull": false,
+    "message": "Transaction for this BLIK code already exists.",
+    "status": "CONFLICT",
+    "statusCode": 409
+}
+
+
+
+#7
+Blik code owner accept request:
+http://localhost:9191/generate/acceptBlik
+Example Request:
+It requires 2 parameters (String) blikCode, (String) pin
+URL with 2 parameters should looks for example: http://localhost:9191/generate/acceptBlik?blikCode=737612&pin=12345
+Example Response:
+Funds have been sent
+Example Exception:
+{
+    "timeStamp": "2024-10-08T15:17:24.775+00:00",
+    "isError": true,
+    "series": "CLIENT_ERROR",
+    "isSuccessfull": false,
+    "message": "Blik not found with: 737612",
+    "status": "NOT_FOUND",
+    "statusCode": 404
+}

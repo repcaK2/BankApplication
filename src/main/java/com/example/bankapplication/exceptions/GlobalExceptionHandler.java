@@ -1,4 +1,4 @@
-package com.example.bankapplication.demo;
+package com.example.bankapplication.exceptions;
 
 import com.example.bankapplication.exceptions.AuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
 		response.put("isError", status.isError());
 		response.put("isSuccessfull", status.is2xxSuccessful());
 		response.put("timeStamp", new Date());
-		response.put("message", ex.getReason() != null ? ex.getReason() : "An internal error occurred");  // Wiadomość z wyjątku
+		response.put("message", ex.getReason() != null ? ex.getReason() : "An internal error occurred");
 
 		return new ResponseEntity<>(response, status);
 	}

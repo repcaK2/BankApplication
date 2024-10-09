@@ -83,15 +83,15 @@ public class BlikController {
 		String senderEmail = principal.getName();
 
 		if (requestedFunds<=0) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid value of funds");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid value of funds");
 		}
 
 		if (blikRepository.findByBlikCode(blikCode).isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Blik Code not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Blik Code not found");
 		}
 
 		if (requestBlikRepository.findByBlikCode(blikCode).isPresent()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Transaction for this BLIK code already exists.");
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Transaction for this BLIK code already exists.");
 		}
 
 		RequestBlik requestBlik = RequestBlik.builder()
@@ -135,39 +135,39 @@ public class BlikController {
 		long expiration_Time = BlikCodeExpiration.getTime() + expirationTime;
 
 		if (currentDate.getTime() > expiration_Time) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Blik code has expired");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Blik code has expired");
 		}
 
 		RequestBlik requestBlik = requestBlikRepository.findByBlikCode(blikCode)
-				.orElseThrow(() -> new RuntimeException("Transaction not found"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
 		double requestedFunds = requestBlik.getRequestedFunds();
 		String requesterEmail = requestBlik.getRequesterEmail();
 
 		User blikOwner = userRepository.findByEmail(ownerEmail)
-				.orElseThrow(() -> new RuntimeException("User not found with email: " + ownerEmail));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + ownerEmail));
 
 		User blikRequester = userRepository.findByEmail(requesterEmail)
 				.orElseThrow(() -> new RuntimeException("User not found with email: " + requesterEmail));
 
 		if (requestBlikRepository.findByBlikCode(blikCode).isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transaction not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found");
 		}
 
 		if (blikRepository.findByBlikCode(blikCode).isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BLIK code not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "BLIK code not found");
 		}
 
 		if (!passwordEncoder.matches(pin, blikOwner.getPin())) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("PIN is invalid");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PIN is invalid");
 		}
 
 		if (!foundBlik.getCreatorEmail().equals(ownerEmail)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You are not BLIK code owner");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not BLIK code owner");
 		}
 
 		if (requestedFunds > blikOwner.getAccountBalance()) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have enought funds");
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have enought funds");
 		}
 
 		double newSenderBalance = blikOwner.getAccountBalance() - requestedFunds;
@@ -196,15 +196,14 @@ public class BlikController {
 
 		kafkaTemplate.send(topicNewBlik, "Funds have been sent");
 
-		return ResponseEntity.ok().body("BLIK transaction has been sent");
+		return ResponseEntity.ok().body("Funds have been sent");
 	}
-
 
 	@GetMapping("/admin/allBlikRequest")
 	public ResponseEntity<?> findAllBlikRequest() {
 		List<RequestBlik> allBlikRequest = requestBlikRepository.findAll();
 		if (allBlikRequest.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Requests not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Requests not found");
 		}
 		return ResponseEntity.ok().body(allBlikRequest);
 	}
@@ -215,7 +214,7 @@ public class BlikController {
 	) {
 		String userEmail = principal.getName();
 		Blik foundBlik = blikRepository.findBlikByCreatorEmail(userEmail)
-				.orElseThrow(() -> new RuntimeException("Blik codes not found"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blik codes not found"));
 
 		return ResponseEntity.ok().body(foundBlik);
 	}
