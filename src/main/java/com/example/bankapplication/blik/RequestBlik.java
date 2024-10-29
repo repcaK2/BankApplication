@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,6 @@ public class RequestBlik {
 	private String blikCode;
 	private String description;
 	private String requesterEmail;
-	private double requestedFunds;
+	private BigDecimal requestedFunds;
 	private String status;
 }

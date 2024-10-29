@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 
@@ -25,19 +26,19 @@ public class MoneyTransferService {
 
 	public String transferMoney(
 			Principal principal,
-			TransferMoneyDTO transferMoneyDTO
+			TransferMoney transferMoney
 	) {
 		String senderEmail = principal.getName();
-		String receiverEmail = transferMoneyDTO.getReceiverEmail();
-		double amountToSend = transferMoneyDTO.getBalanceToSend();
-		String pinRequested = transferMoneyDTO.getPin();
-		String description = transferMoneyDTO.getDescription();
-		String transactionType = transferMoneyDTO.getTransactionType();
+		String receiverEmail = transferMoney.getReceiverEmail();
+		BigDecimal amountToSend = transferMoney.getBalanceToSend();
+		String pinRequested = transferMoney.getPin();
+		String description = transferMoney.getDescription();
+		String transactionType = transferMoney.getTransactionType();
 
 		User sender = userRepository.findByEmail(senderEmail)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + senderEmail));
 
-		if (amountToSend <= 0) {
+		if (amountToSend.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ammount to send: " + amountToSend);
 		}
 
@@ -50,7 +51,7 @@ public class MoneyTransferService {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Receiver not found with email: " + receiverEmail));
 
 		// If user have enought money
-		if (sender.getAccountBalance() < amountToSend) {
+		if (sender.getAccountBalance().compareTo(amountToSend) < 0) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient funds.");
 		}
 
@@ -60,8 +61,8 @@ public class MoneyTransferService {
 		}
 
 		// Balance update
-		double newSenderBalance = sender.getAccountBalance() - amountToSend;
-		double newReceiverBalance = receiver.getAccountBalance() + amountToSend;
+		BigDecimal newSenderBalance = sender.getAccountBalance().subtract(amountToSend);
+		BigDecimal newReceiverBalance = receiver.getAccountBalance().add(amountToSend);
 
 		// Setting new values
 		sender.setAccountBalance(newSenderBalance);

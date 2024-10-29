@@ -15,6 +15,12 @@ public class KafkaTopic {
 	@Value("${spring.kafka.topic.newBlik}")
 	private String topic_new_blik;
 
+	@Value("${spring.kafka.topic.loanException}")
+	private String topic_loan_exception;
+
+	@Value("${spring.kafka.topic.notEnoughBalance}")
+	private String topic_not_enough_balanceL;
+
 	@Bean
 	public NewTopic test() {
 		return TopicBuilder
@@ -26,6 +32,20 @@ public class KafkaTopic {
 	public NewTopic newBlik() {
 		return TopicBuilder
 				.name(topic_new_blik)
+				.build();
+	}
+
+	@Bean
+	public NewTopic loanException() {
+		return TopicBuilder
+				.name(topic_loan_exception)
+				.build();
+	}
+
+	@Bean
+	public NewTopic notEnoughBalance() {
+		return TopicBuilder
+				.name(topic_not_enough_balanceL)
 				.build();
 	}
 }

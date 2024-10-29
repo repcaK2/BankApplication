@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.Date;
 public class TransactionHistoryDTO {
 
 	private Date dateOfCreation;
-	private double amount;
+	private BigDecimal amount;
 	private String transactionType;
 	private String description;
 	private String receiverEmail;

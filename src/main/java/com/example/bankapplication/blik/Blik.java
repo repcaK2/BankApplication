@@ -25,12 +25,4 @@ public class Blik {
 	private String creatorEmail;
 	private Date expirationTime;
 
-	@Override
-	public String toString() {
-		return "Blik{" +
-				"blikCode='" + blikCode + '\'' +
-				", creatorEmail='" + creatorEmail + '\'' +
-				", expirationTime=" + expirationTime +
-				'}';
-	}
 }

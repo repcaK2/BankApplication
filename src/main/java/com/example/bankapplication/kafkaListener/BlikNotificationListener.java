@@ -1,4 +1,4 @@
-package com.example.bankapplication.blik;
+package com.example.bankapplication.kafkaListener;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -6,10 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BlikNotificationListener {
 
-	@KafkaListener(groupId = "deafult", topics = "topicNewBlik")
+	@KafkaListener(groupId = "deafult", topics = "loanException")
 	void blikListener(String data) {
 		System.out.println(data);
 	}
-
-//	void failedLogins(String data)
 }

@@ -20,7 +20,14 @@ spring:
         topic:
             test: topicTest
             newBlik: topicNewBlik
+            loanException: loanException
+            notEnoughBalance: notEnoughBalance
     blik:
         #2 minutes in milliseconds
         expiration_time: 120000
+    registration:
+        created_user_account_balance: 1000
+    loan:
+        #percentage value
+        interest_rate: 5
 

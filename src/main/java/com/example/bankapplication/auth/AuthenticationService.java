@@ -1,17 +1,21 @@
 package com.example.bankapplication.auth;
 
-import com.example.bankapplication.exceptions.AuthenticationException;
+import com.example.bankapplication.exception.AuthenticationException;
 import com.example.bankapplication.security.JwtService;
 import com.example.bankapplication.user.Role;
 import com.example.bankapplication.user.User;
 import com.example.bankapplication.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.Random;
 
 @Service
@@ -23,7 +27,19 @@ public class AuthenticationService {
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
 
+	@Value("${spring.registration.created_user_account_balance}")
+	private BigDecimal createdUserAccountBalance;
+
 	public AuthenticationResponse register(RegisterRequest request) {
+
+		if (request.getPassword().length() < 8) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password should have at least 8 characters long");
+		}
+
+		if (request.getPIN().length() < 5) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PIN should have at least 5 characters long");
+		}
+
 		var user = User.builder()
 				.firstName(request.getFirstname())
 				.lastName(request.getLastname())
@@ -32,7 +48,7 @@ public class AuthenticationService {
 				.phoneNumber(request.getPhoneNumber())
 				.pin(passwordEncoder.encode(request.getPIN()))
 				.accountNumber(generateAccountNumber())
-				.accountBalance(1000)
+				.accountBalance(createdUserAccountBalance)
 				.role(Role.USER)
 				.isEnabled(true)
 				.build();

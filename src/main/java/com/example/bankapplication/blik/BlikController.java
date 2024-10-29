@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 
 @RestController
+@Transactional
 @RequiredArgsConstructor
 public class BlikController {
 
@@ -31,11 +32,7 @@ public class BlikController {
 	private final UserRepository userRepository;
 	private final TransactionHistoryRepository transactionHistoryRepository;
 	private final RequestBlikRepository requestBlikRepository;
-	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final PasswordEncoder passwordEncoder;
-
-	@Value("${spring.kafka.topic.newBlik}")
-	private String topicNewBlik;
 
 	@Value("${spring.blik.expiration_time}")
 	private Long expirationTime;
@@ -78,11 +75,11 @@ public class BlikController {
 	public ResponseEntity<?> requestBlikCode(
 			Principal principal,
 			@RequestParam String blikCode,
-			@RequestParam double requestedFunds
+			@RequestParam BigDecimal requestedFunds
 	) {
 		String senderEmail = principal.getName();
 
-		if (requestedFunds<=0) {
+		if (requestedFunds.compareTo(BigDecimal.ZERO) <= 0 ) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid value of funds");
 		}
 
@@ -103,7 +100,6 @@ public class BlikController {
 				.build();
 
 		requestBlikRepository.save(requestBlik);
-		kafkaTemplate.send(topicNewBlik, "new BLIK request!");
 
 		String customMessage = "BLIK request is created and waiting for owner acceptance";
 
@@ -141,7 +137,7 @@ public class BlikController {
 		RequestBlik requestBlik = requestBlikRepository.findByBlikCode(blikCode)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
-		double requestedFunds = requestBlik.getRequestedFunds();
+		BigDecimal requestedFunds = requestBlik.getRequestedFunds();
 		String requesterEmail = requestBlik.getRequesterEmail();
 
 		User blikOwner = userRepository.findByEmail(ownerEmail)
@@ -166,12 +162,12 @@ public class BlikController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not BLIK code owner");
 		}
 
-		if (requestedFunds > blikOwner.getAccountBalance()) {
+		if (requestedFunds.compareTo(blikOwner.getAccountBalance()) > 0) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have enought funds");
 		}
 
-		double newSenderBalance = blikOwner.getAccountBalance() - requestedFunds;
-		double newRequesterBalance = blikRequester.getAccountBalance() + requestedFunds;
+		BigDecimal newSenderBalance = blikOwner.getAccountBalance().subtract(requestedFunds);
+		BigDecimal newRequesterBalance = blikRequester.getAccountBalance().add(requestedFunds);
 
 		blikOwner.setAccountBalance(newSenderBalance);
 		blikRequester.setAccountBalance(newRequesterBalance);
@@ -193,8 +189,6 @@ public class BlikController {
 
 		requestBlikRepository.delete(requestBlik);
 		blikRepository.delete(foundBlik);
-
-		kafkaTemplate.send(topicNewBlik, "Funds have been sent");
 
 		return ResponseEntity.ok().body("Funds have been sent");
 	}

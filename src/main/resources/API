@@ -141,7 +141,7 @@ It doesn't throw exception on client side but set a status Code
 Generate Blik Request:
 http://localhost:9191/generate/requestBlik
 Example Request:
-It requires 2 Parameters: (String) blikCode, (double) requestedFunds
+It requires 2 Parameters: (String) blikCode, (BigDecimal) requestedFunds
 URL with 2 parameters should looks for example: http://localhost:9191/generate/requestBlik?blikCode=580526&requestedFunds=200
 Example Response:
 {

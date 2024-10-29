@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 
 @RestController
@@ -23,16 +24,16 @@ public class MoneyTransferController {
 	@PostMapping("/transferMoney")
 	public ResponseEntity<String> transferMoney(
 			Principal principal,
-			@RequestBody TransferMoneyDTO transferMoneyDTO
+			@RequestBody TransferMoney transferMoney
 	) {
 		String senderEmail = principal.getName();
-		String receiverEmail = transferMoneyDTO.getReceiverEmail();
-		double amountToSend = transferMoneyDTO.getBalanceToSend();
-		String pinRequested = transferMoneyDTO.getPin();
-		String description = transferMoneyDTO.getDescription();
-		String transactionType = transferMoneyDTO.getTransactionType();
+		String receiverEmail = transferMoney.getReceiverEmail();
+		BigDecimal amountToSend = transferMoney.getBalanceToSend();
+		String pinRequested = transferMoney.getPin();
+		String description = transferMoney.getDescription();
+		String transactionType = transferMoney.getTransactionType();
 
-		return ResponseEntity.ok(moneyTransferService.transferMoney(principal, transferMoneyDTO));
+		return ResponseEntity.ok(moneyTransferService.transferMoney(principal, transferMoney));
 	}
 }
 

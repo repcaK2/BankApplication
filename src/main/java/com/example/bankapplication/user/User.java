@@ -1,6 +1,7 @@
 package com.example.bankapplication.user;
 
 import com.example.bankapplication.history.TransactionHistory;
+import com.example.bankapplication.loan.Loan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -32,10 +34,13 @@ public class User implements UserDetails {
 	@NaturalId(mutable = true)
 	@Column(unique = true)
 	private String email;
+	@NaturalId(mutable = true)
+	@Column(unique = true)
 	private String phoneNumber;
 	@NaturalId(mutable = true)
+	@Column(unique = true)
 	private String accountNumber;
-	private double accountBalance;
+	private BigDecimal accountBalance;
 	private String pin;
 	private boolean isEnabled;
 
@@ -44,6 +49,9 @@ public class User implements UserDetails {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<TransactionHistory> transactionHistories;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Loan> loans;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -79,5 +87,4 @@ public class User implements UserDetails {
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
-
 }

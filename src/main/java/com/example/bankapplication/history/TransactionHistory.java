@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -24,7 +25,7 @@ public class TransactionHistory {
 	private String transactionType;
 	private String description;
 	private Date dateOfCreation;
-	private double amount;
+	private BigDecimal amount;
 	private String receiverEmail;
 	private String receiverName;
 

@@ -5,14 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TransferMoneyDTO {
+public class TransferMoney {
 
 	private String receiverEmail;
-	private double balanceToSend;
+	private BigDecimal balanceToSend;
 	private String pin;
 	private String description;
 	private String transactionType;

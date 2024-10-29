@@ -1,6 +1,5 @@
-package com.example.bankapplication.exceptions;
+package com.example.bankapplication.exception;
 
-import com.example.bankapplication.exceptions.AuthenticationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,8 +56,14 @@ public class GlobalExceptionHandler {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
 		String message;
-		if (ex.getMessage() != null && ex.getMessage().contains("_user_email_key")) {
-			message = "Email already exists";
+		if (ex.getMessage() != null) {
+			if (ex.getMessage().contains("_user_email_key")) {
+				message = "Email already exists";
+			} else if (ex.getMessage().contains("_user_phone_number_key")) {
+				message = "Phone number already exists";
+			} else {
+				message = "Bad credentials";
+			}
 		} else {
 			message = "Bad credentials";
 		}

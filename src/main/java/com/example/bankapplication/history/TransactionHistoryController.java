@@ -16,13 +16,12 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/transaction")
 public class TransactionHistoryController {
 
 	private final TransactionHistoryRepository transactionHistoryRepository;
 	private final UserRepository userRepository;
 
-	@GetMapping("/all")
+	@GetMapping("admin/transaction/all")
 	public ResponseEntity<?> findAllTransactions() {
 		try {
 			List<TransactionHistory> transactionHistories = transactionHistoryRepository.findAll();
@@ -40,7 +39,7 @@ public class TransactionHistoryController {
 		}
 	}
 
-	@PostMapping("/user")
+	@PostMapping("/transaction/user")
 	public ResponseEntity<?> findTransactionsForUser(
 			Principal principal
 	) {
