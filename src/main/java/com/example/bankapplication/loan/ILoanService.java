@@ -13,7 +13,9 @@ public interface ILoanService {
 			String userEmail
 	);
 
-	void processMonthlyLoanRepayments(
+	void processMonthlyLoanRepaymentsForSingleUser(
 			String userEmail
 	);
+
+	void repayLoan();
 }

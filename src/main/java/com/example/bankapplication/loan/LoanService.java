@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -79,7 +80,7 @@ public class LoanService implements ILoanService{
 	}
 
 	@Override
-	public void processMonthlyLoanRepayments(
+	public void processMonthlyLoanRepaymentsForSingleUser(
 			String userEmail
 	) {
 		User foundUser = userRepository.findByEmail(userEmail)
@@ -106,7 +107,30 @@ public class LoanService implements ILoanService{
 
 		foundUser.setAccountBalance(balanceLeft);
 		userRepository.save(foundUser);
-
-
 	}
+
+	@Override
+	@Scheduled(cron = "0 0 0 1 * *")
+	public void repayLoan() {
+		List<Loan> allLoans = loanRepository.findAll();
+
+		for (Loan loan : allLoans) {
+			User user = loan.getUser();
+			BigDecimal payment = loan.getMonthlyPayment();
+
+			if(user.getAccountBalance().compareTo(payment) < 0) {
+				// CREATE FEATURE WHICH STORE PROBLEM WITH PAYMENTS FROM USER
+			}
+
+			if (user.getAccountBalance().compareTo(payment) >= 0 && loan.getLeftLoanAmount().compareTo(BigDecimal.ZERO) > 0) {
+				user.setAccountBalance(user.getAccountBalance().subtract(payment));
+				loan.setLeftLoanAmount(loan.getLeftLoanAmount().subtract(BigDecimal.ONE));
+				loan.setLeftLoanTermMonths(loan.getLeftLoanTermMonths() - 1);
+				userRepository.save(user);
+				loanRepository.save(loan);
+			}
+		}
+	}
+
+
 }

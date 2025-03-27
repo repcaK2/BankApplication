@@ -27,6 +27,7 @@ spring:
         expiration_time: 120000
     registration:
         created_user_account_balance: 1000
+        created_user_account_balance_eur: 200
     loan:
         #percentage value
         interest_rate: 5

@@ -30,6 +30,9 @@ public class AuthenticationService {
 	@Value("${spring.registration.created_user_account_balance}")
 	private BigDecimal createdUserAccountBalance;
 
+	@Value("${spring.registration.created_user_account_balance_eur}")
+	private BigDecimal createdUserAccountBalanceEur;
+
 	public AuthenticationResponse register(RegisterRequest request) {
 
 		if (request.getPassword().length() < 8) {
@@ -49,6 +52,7 @@ public class AuthenticationService {
 				.pin(passwordEncoder.encode(request.getPIN()))
 				.accountNumber(generateAccountNumber())
 				.accountBalance(createdUserAccountBalance)
+				.balanceEur(createdUserAccountBalanceEur)
 				.role(Role.USER)
 				.isEnabled(true)
 				.build();

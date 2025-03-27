@@ -32,6 +32,7 @@ public class SecurityConfiguration {
 						.requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/qr/**").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/secured").hasAuthority("USER")
+						.requestMatchers("/currency").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/loan/**").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/test/**").hasAnyAuthority("USER", "ADMIN")
 						.requestMatchers("/generate/**").hasAnyAuthority("USER", "ADMIN")

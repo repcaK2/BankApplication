@@ -58,6 +58,6 @@ public class QRCodeService {
 		);
 		Path path = FileSystems.getDefault().getPath(qrCodeName);
 		MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-		return "siema";
+		return "created";
 	}
 }

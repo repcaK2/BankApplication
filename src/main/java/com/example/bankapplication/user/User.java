@@ -41,6 +41,7 @@ public class User implements UserDetails {
 	@Column(unique = true)
 	private String accountNumber;
 	private BigDecimal accountBalance;
+	private BigDecimal balanceEur;
 	private String pin;
 	private boolean isEnabled;
 
