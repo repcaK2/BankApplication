@@ -55,17 +55,22 @@ public class LoanService implements ILoanService{
 
 		Loan newLoan = Loan.builder()
 				.startLoanAmount(loanAmount)
-				.leftLoanAmount(loanAmount)
+				.leftLoanAmount(loanCalculationResult.getMonthlyPayment().multiply(BigDecimal.valueOf(loanTermMonths)))
 				.payed(BigDecimal.valueOf(0))
 				.startLoanTermMonths(loanTermMonths)
 				.leftLoanTermMonths(loanTermMonths)
 				.interestRate(interestRate)
 				.monthlyPayment(loanCalculationResult.getMonthlyPayment())
+				.monthsOfDelay(0)
+				.status(LoanStatus.PENDING)
 				.creationTime(new Date())
 				.user(foundUser)
 				.build();
 
 		loanRepository.save(newLoan);
+
+		foundUser.setAccountBalance(foundUser.getAccountBalance().add(loanAmount));
+		userRepository.save(foundUser);
 
 		LoanDTO loanDTO = new LoanDTO();
 		loanDTO.setStartLoanAmount(newLoan.getStartLoanAmount());
@@ -75,6 +80,7 @@ public class LoanService implements ILoanService{
 		loanDTO.setLeftLoanTermMonths(newLoan.getLeftLoanTermMonths());
 		loanDTO.setInterestRate(newLoan.getInterestRate());
 		loanDTO.setMonthlyPayment(newLoan.getMonthlyPayment());
+		loanDTO.setStatus(newLoan.getStatus());
 
 		return loanDTO;
 	}
@@ -101,16 +107,12 @@ public class LoanService implements ILoanService{
 		BigDecimal accountBalance = foundUser.getAccountBalance();
 		BigDecimal balanceLeft = accountBalance.subtract(totalMonthlyPayments);
 
-		if (balanceLeft.compareTo(BigDecimal.ZERO) < 0) {
-			kafkaTemplate.send(topic_not_enough_balanceL, "user: " + userEmail + " has negative balance");
-		}
-
 		foundUser.setAccountBalance(balanceLeft);
 		userRepository.save(foundUser);
 	}
 
 	@Override
-	@Scheduled(cron = "0 0 0 1 * *")
+	@Scheduled(cron = "0 * * * * *")
 	public void repayLoan() {
 		List<Loan> allLoans = loanRepository.findAll();
 
@@ -119,13 +121,21 @@ public class LoanService implements ILoanService{
 			BigDecimal payment = loan.getMonthlyPayment();
 
 			if(user.getAccountBalance().compareTo(payment) < 0) {
-				// CREATE FEATURE WHICH STORE PROBLEM WITH PAYMENTS FROM USER
+				int monthsOfDelay = loan.getMonthsOfDelay();
+				loan.setMonthsOfDelay(monthsOfDelay + 1);
+				loanRepository.save(loan);
 			}
 
 			if (user.getAccountBalance().compareTo(payment) >= 0 && loan.getLeftLoanAmount().compareTo(BigDecimal.ZERO) > 0) {
 				user.setAccountBalance(user.getAccountBalance().subtract(payment));
-				loan.setLeftLoanAmount(loan.getLeftLoanAmount().subtract(BigDecimal.ONE));
+				loan.setLeftLoanAmount(loan.getLeftLoanAmount().subtract(payment));
+				if(loan.getLeftLoanAmount().equals(BigDecimal.ZERO)) {
+					loan.setStatus(LoanStatus.PAYED);
+					loanRepository.save(loan);
+				}
 				loan.setLeftLoanTermMonths(loan.getLeftLoanTermMonths() - 1);
+				loan.setPayed(loan.getPayed().add(payment));
+				loan.setStatus(LoanStatus.PAYED);
 				userRepository.save(user);
 				loanRepository.save(loan);
 			}

@@ -30,5 +30,5 @@ spring:
         created_user_account_balance_eur: 200
     loan:
         #percentage value
-        interest_rate: 5
+        interest_rate: 50
 

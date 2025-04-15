@@ -1,6 +1,6 @@
 class BlikNotificationListener is not finished- NOT DONE
-Creating Loan works but feature which allow user to repay the loan doesnt work - NOT DONE
+Creating Loan works but feature which allow user to repay the loan doesnt work - DONE
 sending money with QR code - NOT DONE
 User should be allowed to change their credentials like email, password, phone number - DONE
 QR CODE TRANSACTIONS - ? DO not know what to do with this feature HINT(JUST SEND PARAMETERS IN THE URL TO SEND MONEY THAT SHOULD BE WORKING)
-Feature to show LIST of all users which have less than 0 balance on acount because of credit
+Feature to show LIST of all users which have less than 0 balance on acount because of credit - DONE

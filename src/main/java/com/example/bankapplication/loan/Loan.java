@@ -28,6 +28,9 @@ public class Loan {
 	private BigDecimal monthlyPayment;
 	private BigDecimal payed;
 	private Date creationTime;
+	private int monthsOfDelay;
+	@Enumerated(EnumType.STRING)
+	private LoanStatus status;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;

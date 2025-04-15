@@ -1,5 +1,7 @@
 package com.example.bankapplication.loan;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +20,7 @@ public class LoanDTO {
 	private BigDecimal interestRate;
 	private BigDecimal monthlyPayment;
 	private BigDecimal payed;
+
+	@Enumerated(EnumType.STRING)
+	private LoanStatus status;
 }
